@@ -1,14 +1,14 @@
---------------------------------------
 some config:
 data_dir = ./data
 output_dir = ./output
 embedding_path = ./embedding/glove.6B.100d.txt
 word_dim = 100
-model_name = Att_BLSTM
+cnn_filters = 128
+model_name = Att_BLSTM_CNN
 mode = 1
 seed = 5782
 cuda = 0
-epoch = 30
+epoch = 20
 batch_size = 10
 lr = 1.0
 max_len = 100
@@ -19,21 +19,26 @@ hidden_size = 100
 layers_num = 1
 L2_decay = 1e-05
 device = cuda:0
-model_dir = ./output/Att_BLSTM
+model_dir = ./output/Att_BLSTM_CNN
 --------------------------------------
 start to load data ...
 finish!
 --------------------------------------
-Att_BLSTM(
+Att_BLSTM_CNN(
   (word_embedding): Embedding(400006, 100)
   (lstm): LSTM(100, 100, batch_first=True, bidirectional=True)
+  (convs): ModuleList(
+    (0): Conv1d(100, 128, kernel_size=(2,), stride=(1,), padding=(1,))
+    (1): Conv1d(100, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+    (2): Conv1d(100, 128, kernel_size=(4,), stride=(1,), padding=(2,))
+  )
   (tanh): Tanh()
   (emb_dropout): Dropout(p=0.3, inplace=False)
   (lstm_dropout): Dropout(p=0.3, inplace=False)
   (linear_dropout): Dropout(p=0.5, inplace=False)
-  (dense): Linear(in_features=100, out_features=19, bias=True)
+  (dense): Linear(in_features=484, out_features=19, bias=True)
 )
-traning model parameters:
+Training model parameters:
 att_weight :  torch.Size([1, 100, 1])
 word_embedding.weight :  torch.Size([400006, 100])
 lstm.weight_ih_l0 :  torch.Size([400, 100])
@@ -44,40 +49,38 @@ lstm.weight_ih_l0_reverse :  torch.Size([400, 100])
 lstm.weight_hh_l0_reverse :  torch.Size([400, 100])
 lstm.bias_ih_l0_reverse :  torch.Size([400])
 lstm.bias_hh_l0_reverse :  torch.Size([400])
-dense.weight :  torch.Size([19, 100])
+convs.0.weight :  torch.Size([128, 100, 2])
+convs.0.bias :  torch.Size([128])
+convs.1.weight :  torch.Size([128, 100, 3])
+convs.1.bias :  torch.Size([128])
+convs.2.weight :  torch.Size([128, 100, 4])
+convs.2.bias :  torch.Size([128])
+dense.weight :  torch.Size([19, 484])
 dense.bias :  torch.Size([19])
 --------------------------------------
-start to train the model ...
-[001] train_loss: 1.145 | dev_loss: 1.143 | micro f1 on dev: 0.7127 >>> save models!
-[002] train_loss: 0.901 | dev_loss: 0.935 | micro f1 on dev: 0.7574 >>> save models!
-[003] train_loss: 0.797 | dev_loss: 0.871 | micro f1 on dev: 0.7702 >>> save models!
-[004] train_loss: 0.690 | dev_loss: 0.830 | micro f1 on dev: 0.7857 >>> save models!
-[005] train_loss: 0.631 | dev_loss: 0.818 | micro f1 on dev: 0.7893 >>> save models!
-[006] train_loss: 0.578 | dev_loss: 0.771 | micro f1 on dev: 0.8046 >>> save models!
-[007] train_loss: 0.534 | dev_loss: 0.783 | micro f1 on dev: 0.8006 
-[008] train_loss: 0.484 | dev_loss: 0.761 | micro f1 on dev: 0.8124 >>> save models!
-[009] train_loss: 0.452 | dev_loss: 0.768 | micro f1 on dev: 0.8144 >>> save models!
-[010] train_loss: 0.417 | dev_loss: 0.760 | micro f1 on dev: 0.8139 
-[011] train_loss: 0.384 | dev_loss: 0.766 | micro f1 on dev: 0.8170 >>> save models!
-[012] train_loss: 0.364 | dev_loss: 0.786 | micro f1 on dev: 0.8118 
-[013] train_loss: 0.300 | dev_loss: 0.765 | micro f1 on dev: 0.8242 >>> save models!
-[014] train_loss: 0.277 | dev_loss: 0.801 | micro f1 on dev: 0.8153 
-[015] train_loss: 0.259 | dev_loss: 0.810 | micro f1 on dev: 0.8157 
-[016] train_loss: 0.247 | dev_loss: 0.822 | micro f1 on dev: 0.8313 >>> save models!
-[017] train_loss: 0.207 | dev_loss: 0.813 | micro f1 on dev: 0.8268 
-[018] train_loss: 0.169 | dev_loss: 0.828 | micro f1 on dev: 0.8248 
-[019] train_loss: 0.163 | dev_loss: 0.838 | micro f1 on dev: 0.8249 
-[020] train_loss: 0.154 | dev_loss: 0.877 | micro f1 on dev: 0.8246 
-[021] train_loss: 0.122 | dev_loss: 0.860 | micro f1 on dev: 0.8198 
-[022] train_loss: 0.120 | dev_loss: 0.892 | micro f1 on dev: 0.8290 
-[023] train_loss: 0.093 | dev_loss: 0.909 | micro f1 on dev: 0.8167 
-[024] train_loss: 0.078 | dev_loss: 0.953 | micro f1 on dev: 0.8130 
-[025] train_loss: 0.070 | dev_loss: 0.943 | micro f1 on dev: 0.8204 
-[026] train_loss: 0.082 | dev_loss: 1.026 | micro f1 on dev: 0.8143 
-[027] train_loss: 0.051 | dev_loss: 1.011 | micro f1 on dev: 0.8119 
-[028] train_loss: 0.042 | dev_loss: 1.008 | micro f1 on dev: 0.8178 
-[029] train_loss: 0.041 | dev_loss: 1.085 | micro f1 on dev: 0.8112 
-[030] train_loss: 0.029 | dev_loss: 1.048 | micro f1 on dev: 0.8168 
+Starting to train the model ...
+[001] train_loss: 1.023 | dev_loss: 1.027 | micro f1 on dev: 0.6808 | Precision on dev: 0.6346 | Recall on dev: 0.6432 | Accuracy on dev: 0.6808 | Macro F1 on dev: 0.7214 >>> Model saved!
+[002] train_loss: 0.806 | dev_loss: 0.877 | micro f1 on dev: 0.7195 | Precision on dev: 0.7642 | Recall on dev: 0.7034 | Accuracy on dev: 0.7195 | Macro F1 on dev: 0.7638 >>> Model saved!
+[003] train_loss: 0.700 | dev_loss: 0.810 | micro f1 on dev: 0.7416 | Precision on dev: 0.7426 | Recall on dev: 0.7642 | Accuracy on dev: 0.7416 | Macro F1 on dev: 0.7874 >>> Model saved!
+[004] train_loss: 0.645 | dev_loss: 0.867 | micro f1 on dev: 0.7317 | Precision on dev: 0.7453 | Recall on dev: 0.7578 | Accuracy on dev: 0.7317 | Macro F1 on dev: 0.7791 
+[005] train_loss: 0.544 | dev_loss: 0.801 | micro f1 on dev: 0.7557 | Precision on dev: 0.7638 | Recall on dev: 0.7706 | Accuracy on dev: 0.7557 | Macro F1 on dev: 0.8004 >>> Model saved!
+[006] train_loss: 0.565 | dev_loss: 0.836 | micro f1 on dev: 0.7526 | Precision on dev: 0.7501 | Recall on dev: 0.7860 | Accuracy on dev: 0.7526 | Macro F1 on dev: 0.7956 
+[007] train_loss: 0.470 | dev_loss: 0.798 | micro f1 on dev: 0.7698 | Precision on dev: 0.7573 | Recall on dev: 0.7949 | Accuracy on dev: 0.7698 | Macro F1 on dev: 0.8045 >>> Model saved!
+[008] train_loss: 0.453 | dev_loss: 0.822 | micro f1 on dev: 0.7600 | Precision on dev: 0.7684 | Recall on dev: 0.7966 | Accuracy on dev: 0.7600 | Macro F1 on dev: 0.8064 >>> Model saved!
+[009] train_loss: 0.381 | dev_loss: 0.813 | micro f1 on dev: 0.7710 | Precision on dev: 0.7804 | Recall on dev: 0.7955 | Accuracy on dev: 0.7710 | Macro F1 on dev: 0.8131 >>> Model saved!
+[010] train_loss: 0.380 | dev_loss: 0.871 | micro f1 on dev: 0.7716 | Precision on dev: 0.7843 | Recall on dev: 0.7973 | Accuracy on dev: 0.7716 | Macro F1 on dev: 0.8144 >>> Model saved!
+[011] train_loss: 0.326 | dev_loss: 0.824 | micro f1 on dev: 0.7808 | Precision on dev: 0.7836 | Recall on dev: 0.8080 | Accuracy on dev: 0.7808 | Macro F1 on dev: 0.8237 >>> Model saved!
+[012] train_loss: 0.358 | dev_loss: 0.909 | micro f1 on dev: 0.7729 | Precision on dev: 0.7778 | Recall on dev: 0.8012 | Accuracy on dev: 0.7729 | Macro F1 on dev: 0.8177 
+[013] train_loss: 0.286 | dev_loss: 0.839 | micro f1 on dev: 0.7753 | Precision on dev: 0.7799 | Recall on dev: 0.8017 | Accuracy on dev: 0.7753 | Macro F1 on dev: 0.8166 
+[014] train_loss: 0.267 | dev_loss: 0.830 | micro f1 on dev: 0.7821 | Precision on dev: 0.7740 | Recall on dev: 0.8152 | Accuracy on dev: 0.7821 | Macro F1 on dev: 0.8215 
+[015] train_loss: 0.277 | dev_loss: 0.865 | micro f1 on dev: 0.7704 | Precision on dev: 0.7554 | Recall on dev: 0.8056 | Accuracy on dev: 0.7704 | Macro F1 on dev: 0.8121 
+[016] train_loss: 0.208 | dev_loss: 0.871 | micro f1 on dev: 0.7845 | Precision on dev: 0.8011 | Recall on dev: 0.7994 | Accuracy on dev: 0.7845 | Macro F1 on dev: 0.8250 >>> Model saved!
+[017] train_loss: 0.185 | dev_loss: 0.909 | micro f1 on dev: 0.7864 | Precision on dev: 0.7864 | Recall on dev: 0.8113 | Accuracy on dev: 0.7864 | Macro F1 on dev: 0.8212 
+[018] train_loss: 0.167 | dev_loss: 0.920 | micro f1 on dev: 0.7851 | Precision on dev: 0.7864 | Recall on dev: 0.8054 | Accuracy on dev: 0.7851 | Macro F1 on dev: 0.8265 >>> Model saved!
+[019] train_loss: 0.179 | dev_loss: 0.892 | micro f1 on dev: 0.7851 | Precision on dev: 0.7941 | Recall on dev: 0.8122 | Accuracy on dev: 0.7851 | Macro F1 on dev: 0.8230 
+[020] train_loss: 0.132 | dev_loss: 0.942 | micro f1 on dev: 0.7839 | Precision on dev: 0.7832 | Recall on dev: 0.8123 | Accuracy on dev: 0.7839 | Macro F1 on dev: 0.8203 
+Training metrics saved to ./output/Att_BLSTM_CNN/Att_BLSTM_CNN_train_metrics.csv
 --------------------------------------
-start test ...
-test_loss: 0.822 | micro f1 on test:  0.8313
+Start testing ...
+test_loss: 0.910 | Micro F1 on test: 0.7914 | Precision on test: 0.7242 | Recall on test: 0.7547 | Accuracy on test: 0.7914 | Macro F1 on test: 0.8302
+Test metrics appended to ./output/Att_BLSTM_CNN/Att_BLSTM_CNN_test_metrics.csv
