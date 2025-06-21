@@ -45,8 +45,7 @@ We program and develop our baseline model, improved model and comparative algori
 
     <span style="color:red">Before using [`main.ipynb`](./main.ipynb), you need to perform the following operations. </span>You have the following two options:
 
-    1. **Using a Pretrained Model**: You can download all trained model data and experimental results from our SemEval2010 Task 8 dataset via [output.zip](https://drive.google.com/file/d/1cPhTx1i0uwbxMFFd2YxnIkNQbC_ik461/view?usp=sharing) from Google Drive. After unzip the file, place the `output` folder in the `ATT_BLSTM_CNN_relation_extraction` directory, replacing the existing [`output`](./output) folder if it already exists. This allows you to directly use the pretrained models for inference and testing in the `3. Model Testing` and `4. Prediction Demo` sections of [`main.ipynb`](./main.ipynb). 
-    * Note: When downloading *output.zip*, a preview issue may appear, but this does not affect the ability to download it normally. 
+    1. **Using a Pretrained Model**: You can download all trained model data and experimental results from our SemEval2010 Task 8 dataset via [output.zip](https://drive.google.com/file/d/1cPhTx1i0uwbxMFFd2YxnIkNQbC_ik461/view?usp=sharing) from Google Drive. After unzip the file, place the `output` folder in the `ATT_BLSTM_CNN_relation_extraction` directory, replacing the existing [`output`](./output) folder if it already exists. This allows you to directly use the pretrained models for inference and testing in the `3. Model Testing` and `4. Prediction Demo` sections of [`main.ipynb`](./main.ipynb).  
 
     2. **Training a New Model**: If you prefer to train a new model from scratch, ensure that the [`output`](./output) folder already exists in the `ATT_BLSTM_CNN_relation_extraction` directory. Then, run the training module `2. Model Training` in `main.ipynb`, where examples are already provided.
 
